@@ -47,6 +47,7 @@ chromium_flash_detection=1
 chrome_pepper_flash_detection=1
 chrome_html5_detection=1
 minitube_detection=0
+mpv_detection=1
 
 # Names of programs which, when running, you wish to delay the screensaver.
 delay_progs=() # For example ('ardour2' 'gmpc')
@@ -248,19 +249,28 @@ isAppRunning()
     fi
 
 
-    #check if user want to detect mplayer fullscreen, modify variable mplayer_detection
+    # Check if user want to detect mpv fullscreen
+    if [ $mpv_detection == 1 ];then
+        if [[ "$activ_win_title" = *mpv* ]];then
+            mpv_process=`pgrep -lc mpv`
+            if [ $mv_process -ge 1 ]; then
+				log "isAppRunning(): mpv fullscreen detected"
+                return 1
+            fi
+        fi
+    fi
+
     if [ $mplayer_detection == 1 ];then
         if [[ "$activ_win_title" = *mplayer* || "$activ_win_title" = *MPlayer* ]];then
             #check if mplayer is running.
             #mplayer_process=`pgrep -l mplayer | grep -wc mplayer`
             mplayer_process=`pgrep -lc mplayer`
             if [ $mplayer_process -ge 1 ]; then
-				log "isAppRunning(): mplayer fullscreen detected"
+				        log "isAppRunning(): mplayer fullscreen detected"
                 return 1
             fi
         fi
     fi
-
 
     # Check if user want to detect vlc fullscreen, modify variable vlc_detection
     if [ $vlc_detection == 1 ];then
